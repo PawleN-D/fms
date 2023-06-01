@@ -1,99 +1,143 @@
-<?php require_once('../../private/initialize.php'); ?>
+<?php
+require_once('../../private/initialize.php');
 
-<?php $page_title = 'Fixture Page'; ?>
-<?php include(SHARED_PATH . '/admin_header.php'); ?>
+// Get all players with their fixtures and goals
+$players = get_players_with_fixtures_and_goals();
+
+// Handle CRUD operations
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["add_player_fixture"])) {
+        $player_fixture = [];
+        $player_fixture['player_id'] = $_POST['player_id'] ?? '';
+        $player_fixture['fixture_id'] = $_POST['fixture_id'] ?? '';
+        $player_fixture['goals_scored'] = $_POST['goals_scored'] ?? '';
+        $result = insert_player_fixture($player_fixture);
+        if ($result === true) {
+            header("Location: " . url_for('/pages/player_fixture.php'));
+            exit;
+        }
+    } elseif (isset($_POST["edit_player_fixture"])) {
+        $player_fixture = [];
+        $player_fixture['player_fixture_id'] = $_POST["player_fixture_id"];
+        $player_fixture['player_id'] = $_POST['player_id'] ?? '';
+        $player_fixture['fixture_id'] = $_POST['fixture_id'] ?? '';
+        $player_fixture['goals_scored'] = $_POST['goals_scored'] ?? '';
+        $result = update_player_fixture($player_fixture);
+        if ($result === true) {
+            header("Location: " . url_for('/pages/player_fixture.php'));
+            exit;
+        }
+    } elseif (isset($_POST["delete_player_fixture"])) {
+        $player_fixture_id = $_POST["player_fixture_id"];
+        $result = delete_player_fixture($player_fixture_id);
+    }
+}
+
+$page_title = 'Player Fixture Page';
+include(SHARED_PATH . '/admin_header.php');
+?>
+
 <div id="content">
 
-    <a class="back-link" href="<?php echo url_for('/index.php'); ?>">&laquo; Back to List</a>
+    <a class="back-link" href="<?php echo url_for('/index.php'); ?>">&laquo; Back to Menu</a>
 
-    <div class="team new">
-        <h1>Add Fixture</h1>
+    <div class="player-fixture">
+        <h1>Player Fixture Page</h1>
 
-        <form action="<?php echo url_for('/staff/subjects/new.php') ?>" method="post">
-            <dl>
-                <dt>Team</dt>
-                <dd><input type="text" name="menu_name" value="" /></dd>
-            </dl>
-            <dl>
-                <dt>Team Email</dt>
-                <dd><input type="text" name="email" value="" /></dd>
-            </dl>
-            <dl>
-                <dt>Select Home Team</dt>
-                <dd>
-                    <select name="subject_id">
+        <table class="list">
+            <tr>
+                <th>Player Name</th>
+                <th>Fixture Date</th>
+                <th>Goals Scored</th>
+                <th>Actions</th>
+            </tr>
 
-                        <option value="">Team A</option>
-                        <option value="">Team B</option>
-                        <option value="">Team C</option>
-                        <option value="">Team D</option>
-                        <option value="">Team C</option>
-                        <?php
-                        //$subject_set = find_all_subjects();
-                        //while ($subject = mysqli_fetch_assoc($subject_set)) {
-                        //    echo "<option value=\"" . h($subject['id']) . "\"";
-                        //    if ($page["subject_id"] == $subject['id']) {
-                        //        echo " selected";
-                        //   }
-                        //  echo ">" . h($subject['menu_name']) . "</option>";
-                        // }
-                        //mysqli_free_result($subject_set);
-                        ?>
-                    </select>
-                </dd>
-            </dl>
-            <dl>
-                <dt>Select Away team</dt>
-                <dd>
-                    <select name="subject_id">
-                        <option value="">Team A</option>
-                        <option value="">Team B</option>
-                        <option value="">Team C</option>
-                        <option value="">Team D</option>
-                        <option value="">Team C</option>
-                        <?php
-                        //$subject_set = find_all_subjects();
-                        //while ($subject = mysqli_fetch_assoc($subject_set)) {
-                        //    echo "<option value=\"" . h($subject['id']) . "\"";
-                        //    if ($page["subject_id"] == $subject['id']) {
-                        //        echo " selected";
-                        //   }
-                        //  echo ">" . h($subject['menu_name']) . "</option>";
-                        // }
-                        //mysqli_free_result($subject_set);
-                        ?>
-                    </select>
-                </dd>
-            </dl>
-            <dl>
-                <dt>Select Competition</dt>
-                <dd>
-                    <select name="subject_id">
-                        <option value="">Team A</option>
-                        <option value="">Team B</option>
-                        <option value="">Team C</option>
-                        <option value="">Team D</option>
-                        <option value="">Team C</option>
-                        <?php
-                        //$subject_set = find_all_subjects();
-                        //while ($subject = mysqli_fetch_assoc($subject_set)) {
-                        //    echo "<option value=\"" . h($subject['id']) . "\"";
-                        //    if ($page["subject_id"] == $subject['id']) {
-                        //        echo " selected";
-                        //   }
-                        //  echo ">" . h($subject['menu_name']) . "</option>";
-                        // }
-                        //mysqli_free_result($subject_set);
-                        ?>
-                    </select>
-                </dd>
-            </dl>
+            <?php while ($player = mysqli_fetch_assoc($players)) { ?>
+                <tr>
+                    <td><?php echo h($player['player_name']); ?></td>
+                    <td><?php echo h($player['fixture_date']); ?></td>
+                    <td><?php echo h($player['goals_scored']); ?></td>
+                    <td>
+                        <a class="action" href="?edit=<?php echo $player["player_fixture_id"]; ?>">Edit</a>
+                        <form action="<?php echo url_for('/pages/player_fixture.php'); ?>" method="post">
+                            <input type="hidden" name="player_fixture_id" value="<?php echo $player["player_fixture_id"]; ?>">
+                            <input type="submit" name="delete_player_fixture" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+            <?php } ?>
+        </table>
 
-            <div id="operations">
-                <input type="submit" value="Submit" />
-            </div>
-        </form>
-
+        <?php if (isset($_GET['edit'])) {
+            $player_fixture_id = $_GET['edit'];
+            $player_fixture = find_player_fixture_by_id($player_fixture_id);
+            if ($player_fixture) { ?>
+                <h2>Edit Player Fixture</h2>
+                <form action="<?php echo url_for('/pages/player_fixture.php'); ?>" method="post">
+                    <input type="hidden" name="player_fixture_id" value="<?php echo $player_fixture['player_fixture_id']; ?>">
+                    <dl>
+                        <dt>Player</dt>
+                        <dd>
+                            <select name="player_id">
+                                <?php while ($player = mysqli_fetch_assoc($players)) { ?>
+                                    <option value="<?php echo h($player['player_id']); ?>" <?php if ($player['player_id'] == $player_fixture['player_id']) echo 'selected'; ?>>
+                                        <?php echo h($player['player_name']); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </dd>
+                        <dt>Fixture</dt>
+                        <dd>
+                            <select name="fixture_id">
+                                <?php while ($fixture = mysqli_fetch_assoc($fixtures)) { ?>
+                                    <option value="<?php echo h($fixture['fixture_id']); ?>" <?php if ($fixture['fixture_id'] == $player_fixture['fixture_id']) echo 'selected'; ?>>
+                                        <?php echo h($fixture['fixture_date'] . ' ' . $fixture['fixture_time']); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </dd>
+                        <dt>Goals Scored</dt>
+                        <dd><input type="number" name="goals_scored" value="<?php echo h($player_fixture['goals_scored']); ?>"></dd>
+                    </dl>
+                    <div id="operations">
+                        <input type="submit" name="edit_player_fixture" value="Update">
+                    </div>
+                </form>
+            <?php } ?>
+        <?php } else { ?>
+            <h2>Add Player Fixture</h2>
+            <form action="<?php echo url_for('/pages/player_fixture.php'); ?>" method="post">
+                <dl>
+                    <dt>Player</dt>
+                    <dd>
+                        <select name="player_id">
+                            <?php while ($player = mysqli_fetch_assoc($players)) { ?>
+                                <option value="<?php echo h($player['player_id']); ?>">
+                                    <?php echo h($player['player_name']); ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </dd>
+                    <dt>Fixture</dt>
+                    <dd>
+                        <select name="fixture_id">
+                            <?php while ($fixture = mysqli_fetch_assoc($fixtures)) { ?>
+                                <option value="<?php echo h($fixture['fixture_id']); ?>">
+                                    <?php echo h($fixture['fixture_date'] . ' ' . $fixture['fixture_time']); ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </dd>
+                    <dt>Goals Scored</dt>
+                    <dd><input type="number" name="goals_scored" value=""></dd>
+                </dl>
+                <div id="operations">
+                    <input type="submit" name="add_player_fixture" value="Add Player Fixture">
+                </div>
+            </form>
+        <?php } ?>
     </div>
 
 </div>
+
+<?php include(SHARED_PATH . '/admin_footer.php'); ?>

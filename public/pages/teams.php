@@ -1,47 +1,8 @@
 <?php
 require_once('../../private/initialize.php');
 
-// Function to get all teams from the database
-// function get_all_teams()
-// {
-//     global $db;
-//     $sql = "SELECT * FROM teams";
-//     $result = mysqli_query($db, $sql);
-//     return $result;
-// }
-
 $teams_set = get_all_teams();
 
-// Function to insert a new team into the database
-// function insert_team($team)
-// {
-//     global $db;
-//     $team_name = mysqli_real_escape_string($db, $team['team_name']);
-//     $team_email = mysqli_real_escape_string($db, $team['team_email']);
-//     $sql = "INSERT INTO teams (team_name, team_email) VALUES ('$team_name', '$team_email')";
-//     $result = mysqli_query($db, $sql);
-//     return $result;
-// }
-
-// Function to update a team in the database
-// function update_team($team_id, $team_name, $team_email)
-// {
-//     global $db;
-//     $team_name = mysqli_real_escape_string($db, $team_name);
-//     $team_email = mysqli_real_escape_string($db, $team_email);
-//     $sql = "UPDATE teams SET team_name = '$team_name', team_email = '$team_email' WHERE team_id = '$team_id'";
-//     $result = mysqli_query($db, $sql);
-//     return $result;
-// }
-
-// Function to delete a team from the database
-// function delete_team($team_id)
-// {
-//     global $db;
-//     $sql = "DELETE FROM teams WHERE team_id = '$team_id'";
-//     $result = mysqli_query($db, $sql);
-//     return $result;
-// }
 
 // Handle CRUD operations
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -52,14 +13,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = insert_team($team);
         if ($result === true) {
             $new_id = mysqli_insert_id($db);
-            // header("Location: " . url_for('/staff/teams/show.php?id=' . $new_id));
-            // exit;
+            header("Location: " . url_for('/pages/teams'));
+            exit;
         }
     } elseif (isset($_POST["edit_team"])) {
-        $team_id = $_POST["team_id"];
-        $team_name = $_POST["team_name"];
-        $team_email = $_POST["team_email"];
-        $result = update_team($team_id, $team_name, $team_email);
+        $team = [];
+        $team['team_id'] = $_POST["team_id"];
+        $team['team_name'] = $_POST['team_name'] ?? '';
+        $team['team_email'] = $_POST['team_email'] ?? '';
+        $result = update_team($team);
+        if ($result === true) {
+            $new_id = mysqli_insert_id($db);
+            header("Location: " . url_for('/pages/teams'));
+            exit;
+        }
     } elseif (isset($_POST["delete_team"])) {
         $team_id = $_POST["team_id"];
         $result = delete_team($team_id);

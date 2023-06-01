@@ -28,7 +28,7 @@ CREATE TABLE `players` (
   FOREIGN KEY (position_id) REFERENCES playerPosition(position_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `subjects`;
+DROP TABLE IF EXISTS `fixtures`;
 CREATE TABLE `fixtures` (
   fixture_id INT AUTO_INCREMENT PRIMARY KEY,
   fixture_date DATE,

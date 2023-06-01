@@ -12,6 +12,32 @@
     return $result;
   }
 
+  function insert_team($team) {
+    global $db;
+
+    // $errors = validate_page($team);
+    // if(!empty($errors)) {
+    //   return $errors;
+    // }
+
+    $sql = "INSERT INTO teams ";
+    $sql .= "(team_name, team_email) ";
+    $sql .= "VALUES (";
+    $sql .= "'" . db_escape($db, $team['team_name']) . "',";
+    $sql .= "'" . db_escape($db, $team['team_email']) . "'";
+    $sql .= ")";
+    $result = mysqli_query($db, $sql);
+    // For INSERT statements, $result is true/false
+    if($result) {
+      return true;
+    } else {
+      // INSERT failed
+      echo mysqli_error($db);
+      db_disconnect($db);
+      exit;
+    }
+  }
+
   function delete_team($id) {
     global $db;
 
@@ -39,7 +65,7 @@
     //   return $errors;
     // }
 
-    $sql = "UPDATE team SET ";
+    $sql = "UPDATE teams SET ";
     $sql .= "team_name='" . db_escape($db, $team['team_name']) . "', ";
     $sql .= "team_email='" . db_escape($db, $team['team_email']) . "' ";
     $sql .= "WHERE team_id='" . db_escape($db, $team['team_id']) . "' ";
@@ -56,6 +82,125 @@
       exit;
     }
 
+  }
+
+  //Competitions
+  function get_all_competitions() {
+    global $db;
+
+    $sql = "SELECT * FROM competitions ";
+    //echo $sql;
+    $result = mysqli_query($db, $sql);
+    // echo $result;
+    confirm_result_set($result);
+    return $result;
+  }
+
+  function insert_competition($competition) {
+    global $db;
+
+    // $errors = validate_page($team);
+    // if(!empty($errors)) {
+    //   return $errors;
+    // }
+
+    $sql = "INSERT INTO competitions ";
+    $sql .= "(comp_name) ";
+    $sql .= "VALUES (";
+    $sql .= "'" . db_escape($db, $competition['comp_name']) . "'";
+    $sql .= ")";
+    $result = mysqli_query($db, $sql);
+    // For INSERT statements, $result is true/false
+    if($result) {
+      return true;
+    } else {
+      // INSERT failed
+      echo mysqli_error($db);
+      db_disconnect($db);
+      exit;
+    }
+  }
+
+  function update_competition($competition) {
+    global $db;
+
+    // $errors = validate_subject($subject);
+    // if(!empty($errors)) {
+    //   return $errors;
+    // }
+
+    $sql = "UPDATE competitions SET ";
+    $sql .= "comp_name='" . db_escape($db, $competition['comp_name']) . "' ";
+    $sql .= "WHERE comp_id='" . db_escape($db, $competition['comp_id']) . "' ";
+    $sql .= "LIMIT 1";
+
+    $result = mysqli_query($db, $sql);
+    // For UPDATE statements, $result is true/false
+    if($result) {
+      return true;
+    } else {
+      // UPDATE failed
+      echo mysqli_error($db);
+      db_disconnect($db);
+      exit;
+    }
+
+  }
+
+  function delete_competition($id) {
+    global $db;
+
+    $sql = "DELETE FROM competitions ";
+    $sql .= "WHERE comp_id='" . db_escape($db, $id) . "' ";
+    $sql .= "LIMIT 1";
+    $result = mysqli_query($db, $sql);
+
+    // For DELETE statements, $result is true/false
+    if($result) {
+      return true;
+    } else {
+      // DELETE failed
+      echo mysqli_error($db);
+      db_disconnect($db);
+      exit;
+    }
+  }
+
+  // Positions
+  function get_all_position() {
+    global $db;
+
+    $sql = "SELECT * FROM playerPosition ";
+    //echo $sql;
+    $result = mysqli_query($db, $sql);
+    // echo $result;
+    confirm_result_set($result);
+    return $result;
+  }
+
+  function insert_position($competition) {
+    global $db;
+
+    // $errors = validate_page($team);
+    // if(!empty($errors)) {
+    //   return $errors;
+    // }
+
+    $sql = "INSERT INTO playerPosition ";
+    $sql .= "(comp_name) ";
+    $sql .= "VALUES (";
+    $sql .= "'" . db_escape($db, $competition['comp_name']) . "'";
+    $sql .= ")";
+    $result = mysqli_query($db, $sql);
+    // For INSERT statements, $result is true/false
+    if($result) {
+      return true;
+    } else {
+      // INSERT failed
+      echo mysqli_error($db);
+      db_disconnect($db);
+      exit;
+    }
   }
 
   // Subjects
@@ -260,31 +405,7 @@
     return $errors;
   }
 
-  function insert_team($team) {
-    global $db;
 
-    // $errors = validate_page($team);
-    // if(!empty($errors)) {
-    //   return $errors;
-    // }
-
-    $sql = "INSERT INTO teams ";
-    $sql .= "(team_name, team_email) ";
-    $sql .= "VALUES (";
-    $sql .= "'" . db_escape($db, $team['team_name']) . "',";
-    $sql .= "'" . db_escape($db, $team['team_email']) . "'";
-    $sql .= ")";
-    $result = mysqli_query($db, $sql);
-    // For INSERT statements, $result is true/false
-    if($result) {
-      return true;
-    } else {
-      // INSERT failed
-      echo mysqli_error($db);
-      db_disconnect($db);
-      exit;
-    }
-  }
 
   function update_page($page) {
     global $db;
