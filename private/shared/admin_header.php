@@ -1,8 +1,11 @@
 <?php
 if (!isset($page_title)) {
     $page_title = 'Admin Area';
+    
 }
+require_login(); 
 ?>
+
 
 <!doctype html>
 

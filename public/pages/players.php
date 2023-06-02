@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $player['position_id'] = $_POST['position_id'] ?? '';
         $result = insert_player($player);
         if ($result === true) {
-            header("Location: " . url_for('/pages/player_information.php'));
+            header("Location: " . url_for('/pages/players.php'));
             exit;
         }
     } elseif (isset($_POST["edit_player"])) {
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $player['position_id'] = $_POST['position_id'] ?? '';
         $result = update_player($player);
         if ($result === true) {
-            header("Location: " . url_for('/pages/player_information.php'));
+            header("Location: " . url_for('/pages/players.php'));
             exit;
         }
     } elseif (isset($_POST["delete_player"])) {
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $player_id = $_POST["player_id"];
         $result = delete_player($player_id);
         if ($result === true) {
-            header("Location: " . url_for('/pages/player_information.php'));
+            header("Location: " . url_for('/pages/players.php'));
             exit;
         }
     }
@@ -63,10 +63,10 @@ include(SHARED_PATH . '/admin_header.php');
 
         <?php if (isset($confirm_msg)) { ?>
             <p><?php echo $confirm_msg; ?></p>
-            <form action="<?php echo url_for('/pages/player_information.php'); ?>" method="post">
+            <form action="<?php echo url_for('/pages/players.php'); ?>" method="post">
                 <input type="hidden" name="player_id" value="<?php echo $player_id; ?>">
                 <input type="submit" name="confirm_delete" value="Delete">
-                <a class="action" href="<?php echo url_for('/pages/player_information.php'); ?>">Cancel</a>
+                <a class="action" href="<?php echo url_for('/pages/players.php'); ?>">Cancel</a>
             </form>
         <?php } elseif (isset($error_msg)) { ?>
             <p><?php echo $error_msg; ?></p>
@@ -87,7 +87,7 @@ include(SHARED_PATH . '/admin_header.php');
                         <td><?php echo h($player['position_descr']); ?></td>
                         <td>
                             <a class="action" href="?edit=<?php echo $player["player_id"]; ?>">Edit</a>
-                            <form action="<?php echo url_for('/pages/player_information.php'); ?>" method="post">
+                            <form action="<?php echo url_for('/pages/players.php'); ?>" method="post">
                                 <input type="hidden" name="player_id" value="<?php echo $player["player_id"]; ?>">
                                 <input type="submit" name="delete_player" value="Delete">
                             </form>
@@ -101,7 +101,7 @@ include(SHARED_PATH . '/admin_header.php');
                 $player = find_player_by_id($player_id);
                 if ($player) { ?>
                     <h2>Edit Player</h2>
-                    <form action="<?php echo url_for('/pages/player_information.php'); ?>" method="post">
+                    <form action="<?php echo url_for('/pages/players.php'); ?>" method="post">
                         <input type="hidden" name="player_id" value="<?php echo $player['player_id']; ?>">
                         <dl>
                             <dt>Player Name</dt>
@@ -134,7 +134,7 @@ include(SHARED_PATH . '/admin_header.php');
                 }
             } else { ?>
                 <h2>Add New Player</h2>
-                <form action="<?php echo url_for('/pages/player_information.php'); ?>" method="post">
+                <form action="<?php echo url_for('/pages/players.php'); ?>" method="post">
                     <dl>
                         <dt>Player Name</dt>
                         <dd><input type="text" name="player_name" value=""></dd>

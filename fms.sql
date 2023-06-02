@@ -50,3 +50,59 @@ CREATE TABLE `playerFixtures` (
   FOREIGN KEY (player_id) REFERENCES Players(player_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+Certainly! Here's an example of sample data that you can insert into each table while maintaining the relationships between the foreign keys:
+
+INSERT INTO teams (team_name, team_email) VALUES
+  ('Team A', 'team_a@example.com'),
+  ('Team B', 'team_b@example.com'),
+  ('Team C', 'team_c@example.com'),
+  ('Team D', 'team_d@example.com');
+
+INSERT INTO competitions (comp_name) VALUES
+  ('Tournament 1'),
+  ('Tournament 2'),
+  ('Tournament 3');
+
+INSERT INTO playerPosition (position_id, position_descr) VALUES
+  (1, 'GK'),
+  (2, 'CB'),
+  (3, 'LB'),
+  (4, 'FB'),
+  (5, 'LWB'),
+  (6, 'RWB'),
+  (7, 'SW'),
+  (8, 'DM'),
+  (9, 'CM'),
+  (10, 'AM'),
+  (11, 'LW'),
+  (12, 'RW'),
+  (13, 'CF'),
+  (14, 'WF');
+
+INSERT INTO players (team_id, player_name, player_sqd_num, position_id) VALUES
+  (1, 'Player 1', 10, 1),
+  (1, 'Player 2', 7, 4),
+  (2, 'Player 3', 5, 6),
+  (2, 'Player 4', 9, 9),
+  (3, 'Player 5', 11, 3),
+  (3, 'Player 6', 2, 8),
+  (4, 'Player 7', 8, 11),
+  (4, 'Player 8', 6, 13);
+
+
+INSERT INTO fixtures (fixture_date, fixture_time, home_teamID, away_teamID, comp_id) VALUES
+  ('2023-06-01', '18:00:00', 1, 2, 1),
+  ('2023-06-02', '15:30:00', 3, 4, 2),
+  ('2023-06-03', '20:45:00', 2, 1, 1);
+
+
+INSERT INTO playerFixtures (fixture_id, player_id, goals_scored) VALUES
+  (1, 1, 2),
+  (1, 2, 1),
+  (2, 3, 0),
+  (2, 4, 1),
+  (3, 5, 3),
+  (3, 6, 2);
+
+Note: This is just an example of sample data. You can modify it according to your specific requirements and add more records as needed.

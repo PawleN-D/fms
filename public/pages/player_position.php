@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $position = [];
         $position['position_id'] = $_POST['position_id'];
         $position['position_descr'] = $_POST['position_descr'] ?? '';
-        // $result = update_position($position);
+        $result = update_position($position);
         if ($result === true) {
             header("Location: " . url_for('/pages/player_positions.php'));
             exit;

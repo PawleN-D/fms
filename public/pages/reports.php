@@ -16,8 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $file = fopen($filename, "w");
         fwrite($file, "Player: " . $player["player_name"] . "\n");
         fwrite($file, "Total Goals: " . $playerGoalsTotal . "\n\n");
-        fwrite($file, "Fixture Goals:\n");
-        fwrite($file, "Home Fixtures:\n");
         foreach ($playerFixtureGoals["home_fixtures"] as $fixture) {
             fwrite($file, "Fixture ID: " . $fixture["fixture_id"] . ", Goals: " . $fixture["goals_scored"] . "\n");
         }
